@@ -97,7 +97,7 @@ func handleConnect(conn net.Conn) {
 		input := make([]byte, (1024 * 4)) // считываем полученные в запросе срез байт из порта
 		n, err := conn.Read(input)
 		if n == 0 || err != nil {
-			fmt.Println("Read error:", err)
+			fmt.Println(err)
 			break
 		}
 		requestMessage := string(input[0:n])
