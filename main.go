@@ -11,10 +11,11 @@ import (
 	"strconv"
 )
 
-var requestMessage, _network, _port string
+var requestMessage, _network, _ip, _port string
 var errServ int
 var ErrInvalidTypeNetwork = errors.New("invalid type network")
 var ErrInvalidPort = errors.New("invalid port number")
+var ErrInvalidIPaddress = errors.New("invalid IP address")
 var ErrInvalidAnswerServer = errors.New("invalid answer server")
 var ErrInvalidServerListen = errors.New("invalid listen server")
 
@@ -36,6 +37,24 @@ func inpNetwork() (string, int) {
 		return typNet, 1
 	} else {
 		return typNet, 0
+	}
+}
+
+func inpIP() {
+	err := 1
+	for err == 1 {
+		fmt.Print("Введите IP сервера:	")
+		//inpIP()
+		fmt.Scanf(
+			"%s\n",
+			&_ip,
+		)
+		iperr := net.ParseIP(_ip)
+		if iperr != nil {
+			err = 0
+		} else {
+			fmt.Println(ErrInvalidIPaddress)
+		}
 	}
 }
 
@@ -69,6 +88,7 @@ func inpPort() (string, int) {
 
 func _server() {
 	errServ = 0
+	fmt.Println("Server= ", _network, _port)
 	listener, err := net.Listen(_network, _port) // установка тип сети и порта для прослушивания
 	if err != nil {
 		fmt.Println(ErrInvalidAnswerServer)
@@ -126,6 +146,7 @@ func main() {
 			fmt.Println(ErrInvalidTypeNetwork)
 		}
 	}
+	inpIP()
 	err = 1
 	for err == 1 {
 		fmt.Print("Введите номер порта:	")
@@ -134,6 +155,7 @@ func main() {
 			fmt.Println(ErrInvalidPort)
 		}
 	}
+	_port = _ip + _port
 	go _server() // запуск сервера
 	<-time.After(5 * time.Second)
 	if errServ == 0 {
